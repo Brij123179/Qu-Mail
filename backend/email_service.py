@@ -27,14 +27,18 @@ class EmailService:
             "imap_host": "imap.gmail.com",
             "imap_port": 993,
         }
+        self._inmemory_mailbox: List[Dict[str, Any]] = []
         self._ensure_mailbox_file()
         # In-memory cache for decrypted messages to prevent repeated polling key requests
         self._decrypted_cache: Dict[str, Dict[str, Any]] = {}
 
     def _ensure_mailbox_file(self):
-        if not MAILBOX_FILE.exists():
-            with open(MAILBOX_FILE, "w") as f:
-                json.dump([], f)
+        try:
+            if not MAILBOX_FILE.exists():
+                with open(MAILBOX_FILE, "w") as f:
+                    json.dump([], f)
+        except Exception as e:
+            print(f"Warning: Cannot create mailbox file: {e}")
 
     def set_transport_config(self, config: TransportConfigRequest) -> Dict[str, Any]:
         self.transport_config.update(config.model_dump())
@@ -49,13 +53,21 @@ class EmailService:
     def _load_mailbox(self) -> List[Dict[str, Any]]:
         try:
             with open(MAILBOX_FILE, "r") as f:
-                return json.load(f)
+                disk_data = json.load(f)
+                for m in self._inmemory_mailbox:
+                    if not any(d["id"] == m["id"] for d in disk_data):
+                        disk_data.insert(0, m)
+                return disk_data
         except Exception:
-            return []
+            return self._inmemory_mailbox
 
     def _save_mailbox(self, mailbox: List[Dict[str, Any]]):
-        with open(MAILBOX_FILE, "w") as f:
-            json.dump(mailbox, f, indent=2)
+        self._inmemory_mailbox = mailbox
+        try:
+            with open(MAILBOX_FILE, "w") as f:
+                json.dump(mailbox, f, indent=2)
+        except Exception as e:
+            print(f"Warning: Mailbox file persistence error: {e}")
 
     def _send_via_real_smtp(self, req: SendEmailRequest, enc_res: Dict[str, Any], msg_record: Dict[str, Any]):
         cfg = self.transport_config

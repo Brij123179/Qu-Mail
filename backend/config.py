@@ -3,8 +3,18 @@ from pathlib import Path
 
 # Base Paths
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "data"
-DATA_DIR.mkdir(exist_ok=True)
+
+# On Vercel / serverless cloud environments, use /tmp as the writable location
+if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
+    DATA_DIR = Path("/tmp") / "qumail_data"
+else:
+    DATA_DIR = BASE_DIR / "data"
+
+try:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+except Exception:
+    DATA_DIR = Path("/tmp")
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # Service Configuration
 HOST = os.getenv("QUMAIL_HOST", "127.0.0.1")
