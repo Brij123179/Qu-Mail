@@ -131,7 +131,17 @@ def simulate_tamper_attack(msg_id: str):
     """
     msg = email_service.get_message_by_id(msg_id)
     if not msg:
-        raise HTTPException(status_code=404, detail="Message not found.")
+        mailbox = email_service._load_mailbox()
+        if mailbox:
+            msg = mailbox[0]
+        else:
+            return AttackSimResponse(
+                attack_type="Ciphertext Tamper / AEAD Attack",
+                success=False,
+                status_code=404,
+                details="No target email message found in current mailbox. Please compose and send an encrypted email first!",
+                mitigation_explanation="AEAD tamper testing requires an active encrypted email in the mailbox.",
+            )
 
     if msg["security_level"] == 1:
         return AttackSimResponse(
@@ -171,7 +181,7 @@ def simulate_tamper_attack(msg_id: str):
         log_audit(
             event_type="TAMPER_ATTACK_PREVENTED",
             actor="RedTeamSimulator",
-            details={"msg_id": msg_id, "error": str(ce)},
+            details={"msg_id": msg.get("id", msg_id), "error": str(ce)},
             status_str="BREACH_PREVENTED",
         )
         return AttackSimResponse(
@@ -191,7 +201,17 @@ def simulate_harvest_attack(msg_id: str):
     """
     msg = email_service.get_message_by_id(msg_id)
     if not msg:
-        raise HTTPException(status_code=404, detail="Message not found.")
+        mailbox = email_service._load_mailbox()
+        if mailbox:
+            msg = mailbox[0]
+        else:
+            return AttackSimResponse(
+                attack_type="Harvest Now, Decrypt Later",
+                success=False,
+                status_code=404,
+                details="No target email message found in current mailbox. Please compose and send an email first!",
+                mitigation_explanation="Harvest attack testing requires an active email in the mailbox.",
+            )
 
     level = msg["security_level"]
 

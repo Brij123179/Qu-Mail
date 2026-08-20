@@ -277,4 +277,9 @@ class EmailService:
         for m in mailbox:
             if m["id"] == msg_id:
                 return m
+        if msg_id in self._decrypted_cache:
+            return self._decrypted_cache[msg_id]
+        for m in self._inmemory_mailbox:
+            if m["id"] == msg_id:
+                return m
         return None
