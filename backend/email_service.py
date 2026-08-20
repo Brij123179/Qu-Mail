@@ -111,8 +111,10 @@ class EmailService:
             if not any(a["id"] == m["id"] for a in all_msgs):
                 all_msgs.append(m)
 
-        if not all_msgs:
+        if not all_msgs and not getattr(self, "_has_seeded", False):
+            self._has_seeded = True
             all_msgs = self._seed_default_messages()
+            self._inmemory_mailbox = all_msgs
 
         return all_msgs
 
