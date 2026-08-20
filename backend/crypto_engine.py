@@ -21,16 +21,60 @@ class CryptoEngine:
         self.http_client = http_client or requests
 
     def _post(self, path: str, json_data: dict):
-        url = f"{self.km_url}{path}"
-        if hasattr(self.http_client, "post"):
+        if hasattr(self.http_client, "post") and self.http_client != requests:
+            url = f"{self.km_url}{path}"
             return self.http_client.post(url, json=json_data)
-        return requests.post(url, json=json_data, timeout=5)
+        try:
+            url = f"{self.km_url}{path}"
+            return requests.post(url, json=json_data, timeout=2)
+        except Exception:
+            # In-process fallback for serverless deployments (Vercel) when localhost daemon is not running
+            from backend.km_server import generate_key
+            from backend.models import GenerateKeyRequest
+            if path in ("/keys/generate", "/api/v1/keys/generate"):
+                res_model = generate_key(GenerateKeyRequest(**json_data))
+                class InProcessResponse:
+                    status_code = 201
+                    def json(self):
+                        return res_model.model_dump()
+                    def raise_for_status(self):
+                        pass
+                return InProcessResponse()
+            raise
 
     def _get(self, path: str):
-        url = f"{self.km_url}{path}"
-        if hasattr(self.http_client, "get"):
+        if hasattr(self.http_client, "get") and self.http_client != requests:
+            url = f"{self.km_url}{path}"
             return self.http_client.get(url)
-        return requests.get(url, timeout=5)
+        try:
+            url = f"{self.km_url}{path}"
+            return requests.get(url, timeout=2)
+        except Exception:
+            # In-process fallback for serverless deployments (Vercel) when localhost daemon is not running
+            from backend.km_server import get_key
+            from fastapi import HTTPException
+            parts = path.strip("/").split("/")
+            if len(parts) >= 2 and parts[-2] == "keys":
+                key_id = parts[-1]
+                try:
+                    res_model = get_key(key_id)
+                    class InProcessResponse:
+                        status_code = 200
+                        def json(self):
+                            return res_model.model_dump()
+                        def raise_for_status(self):
+                            pass
+                    return InProcessResponse()
+                except HTTPException as he:
+                    class InProcessErrorResponse:
+                        status_code = he.status_code
+                        def json(self):
+                            return {"detail": he.detail}
+                        @property
+                        def text(self):
+                            return he.detail
+                    return InProcessErrorResponse()
+            raise
 
     def _derive_aes_key(self, raw_key: bytes) -> bytes:
         """
