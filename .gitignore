@@ -21,3 +21,5 @@ data/audit_logs.json
 .idea/
 .DS_Store
 Thumbs.db
+
+.vercel
