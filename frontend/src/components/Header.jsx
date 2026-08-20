@@ -49,7 +49,7 @@ export default function Header({ onOpenPhysics, transportMode }) {
           <Activity size={14} color="#2563eb" /> Status: QKD Key Manager Online
         </span>
 
-        <a href="http://127.0.0.1:8000/docs" target="_blank" rel="noreferrer" style={{
+        <a href="/docs" target="_blank" rel="noreferrer" style={{
           background: '#f8fafc', border: '1px solid #cbd5e1',
           color: '#475569', padding: '8px 14px', borderRadius: '20px', fontSize: '12px',
           textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500'

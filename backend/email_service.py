@@ -32,6 +32,53 @@ class EmailService:
         # In-memory cache for decrypted messages to prevent repeated polling key requests
         self._decrypted_cache: Dict[str, Dict[str, Any]] = {}
 
+    def _seed_default_messages(self) -> List[Dict[str, Any]]:
+        seed_requests = [
+            SendEmailRequest(
+                sender="alice@qumail.sec",
+                recipient="bob@qumail.sec",
+                subject="TOP SECRET DEFENSE DIRECTIVE: OPERATION QUMAIL-2026",
+                body="OPERATION QUMAIL-2026: Quantum Optical Key Exchange Active on Dark Fiber link node 014.",
+                security_level=3,
+            ),
+            SendEmailRequest(
+                sender="alice@qumail.sec",
+                recipient="bob@qumail.sec",
+                subject="ETSI GS QKD 014 Key Manager Synchronization",
+                body="Key Manager node synchronized across Slave SA ID 014. Single-use key burn rule enforced.",
+                security_level=2,
+            ),
+            SendEmailRequest(
+                sender="alice@qumail.sec",
+                recipient="bob@qumail.sec",
+                subject="Kyber-768 Post-Quantum Hybrid Test",
+                body="NIST ML-KEM-768 lattice key encapsulation verified. Dual key quantum-resistant transport active.",
+                security_level=4,
+            ),
+            SendEmailRequest(
+                sender="alice@qumail.sec",
+                recipient="bob@qumail.sec",
+                subject="Routine Cybersecurity Audit Report",
+                body="Monthly system health telemetry report generated. All QKD optical nodes operating normally.",
+                security_level=1,
+            ),
+            SendEmailRequest(
+                sender="eve@adversary.sec",
+                recipient="bob@qumail.sec",
+                subject="Red Team Intercept Signal",
+                body="Eavesdropped ciphertext packet captured in transit. Testing single-use key HTTP 410 defense.",
+                security_level=3,
+            ),
+        ]
+        seeded = []
+        for req in seed_requests:
+            try:
+                msg = self.send_email(req)
+                seeded.append(msg)
+            except Exception:
+                pass
+        return seeded
+
     def _ensure_mailbox_file(self):
         try:
             if not MAILBOX_FILE.exists():
@@ -51,15 +98,23 @@ class EmailService:
         return cfg
 
     def _load_mailbox(self) -> List[Dict[str, Any]]:
+        disk_data = []
         try:
-            with open(MAILBOX_FILE, "r") as f:
-                disk_data = json.load(f)
-                for m in self._inmemory_mailbox:
-                    if not any(d["id"] == m["id"] for d in disk_data):
-                        disk_data.insert(0, m)
-                return disk_data
+            if MAILBOX_FILE.exists():
+                with open(MAILBOX_FILE, "r") as f:
+                    disk_data = json.load(f)
         except Exception:
-            return self._inmemory_mailbox
+            disk_data = []
+
+        all_msgs = []
+        for m in self._inmemory_mailbox + disk_data:
+            if not any(a["id"] == m["id"] for a in all_msgs):
+                all_msgs.append(m)
+
+        if not all_msgs:
+            all_msgs = self._seed_default_messages()
+
+        return all_msgs
 
     def _save_mailbox(self, mailbox: List[Dict[str, Any]]):
         self._inmemory_mailbox = mailbox
