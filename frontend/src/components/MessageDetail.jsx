@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, Flame, Key, Lock, Unlock, Copy, Check, ShieldAlert } from 'lucide-react';
+import { Eye, Flame, Lock, Unlock, Copy, Check, ShieldAlert, ShieldX } from 'lucide-react';
 
-export default function MessageDetail({ selectedMsg, onInspectMime, onTamperTest }) {
+export default function MessageDetail({ selectedMsg, currentUser = 'bob@qumail.sec', onInspectMime, onTamperTest }) {
   const [keyInput, setKeyInput] = useState('');
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [copied, setCopied] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Check if active mailbox user is the authorized recipient
+  const isAuthorizedRecipient = !selectedMsg?.recipient ||
+    currentUser.toLowerCase().trim() === selectedMsg.recipient.toLowerCase().trim() ||
+    selectedMsg.recipient.toLowerCase().includes(currentUser.toLowerCase().trim());
 
   useEffect(() => {
     // Reset manual unlock state whenever selected message changes
@@ -14,9 +19,9 @@ export default function MessageDetail({ selectedMsg, onInspectMime, onTamperTest
     if (selectedMsg && selectedMsg.security_level === 1) {
       setIsUnlocked(true); // Level 1 TLS has no QKD key required
     } else {
-      setIsUnlocked(false); // Level 2, 3, 4 require manual key input
+      setIsUnlocked(false); // Level 2, 3, 4 require manual key input by recipient
     }
-  }, [selectedMsg?.id]);
+  }, [selectedMsg?.id, currentUser]);
 
   if (!selectedMsg) {
     return (
@@ -27,7 +32,7 @@ export default function MessageDetail({ selectedMsg, onInspectMime, onTamperTest
   }
 
   const handleCopyKeyId = () => {
-    if (selectedMsg.key_id) {
+    if (isAuthorizedRecipient && selectedMsg.key_id) {
       navigator.clipboard.writeText(selectedMsg.key_id);
       setKeyInput(selectedMsg.key_id);
       setCopied(true);
@@ -38,10 +43,16 @@ export default function MessageDetail({ selectedMsg, onInspectMime, onTamperTest
   const handleManualDecrypt = (e) => {
     e.preventDefault();
     setErrorMsg('');
+
+    if (!isAuthorizedRecipient) {
+      setErrorMsg(`🚨 ACCESS DENIED: Only the designated recipient (${selectedMsg.recipient}) is authorized to retrieve the QKD Key ID.`);
+      return;
+    }
+
     const cleanedInput = keyInput.trim();
 
     if (!cleanedInput) {
-      setErrorMsg('Please enter or paste the QKD Key ID to decrypt.');
+      setErrorMsg('Please enter or paste your QKD Key ID to decrypt.');
       return;
     }
 
@@ -72,51 +83,88 @@ export default function MessageDetail({ selectedMsg, onInspectMime, onTamperTest
         </span>
       </div>
 
-      {/* Key ID Banner */}
+      {/* Recipient Key Banner (Visible ONLY to Authorized Recipient) */}
       {selectedMsg.key_id && (
-        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '10px 14px', fontSize: '11px', fontFamily: 'var(--font-code)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{
+          background: isAuthorizedRecipient ? '#f8fafc' : '#fff1f2',
+          border: isAuthorizedRecipient ? '1px solid #e2e8f0' : '1px solid #fecdd3',
+          borderRadius: '8px', padding: '10px 14px', fontSize: '11px', fontFamily: 'var(--font-code)',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+        }}>
           <div>
             <span style={{ color: '#64748b' }}>ETSI QKD Key ID: </span>
-            <span style={{ color: '#1e3a8a', fontWeight: '600' }}>{selectedMsg.key_id}</span>
+            {isAuthorizedRecipient ? (
+              <span style={{ color: '#1e3a8a', fontWeight: '600' }}>{selectedMsg.key_id}</span>
+            ) : (
+              <span style={{ color: '#e11d48', fontWeight: '700', letterSpacing: '2px' }}>
+                🔒 [HIDDEN - RESTRICTED TO RECIPIENT ({selectedMsg.recipient})]
+              </span>
+            )}
           </div>
-          <button onClick={handleCopyKeyId} style={{
-            background: '#ffffff', border: '1px solid #cbd5e1', color: '#1e293b',
-            padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px'
-          }}>
-            {copied ? <Check size={12} color="#16a34a" /> : <Copy size={12} />}
-            {copied ? 'Copied & Pasted!' : 'Copy Key ID'}
-          </button>
+          {isAuthorizedRecipient ? (
+            <button onClick={handleCopyKeyId} style={{
+              background: '#ffffff', border: '1px solid #cbd5e1', color: '#1e293b',
+              padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px'
+            }}>
+              {copied ? <Check size={12} color="#16a34a" /> : <Copy size={12} />}
+              {copied ? 'Copied Key ID!' : 'Copy Key ID'}
+            </button>
+          ) : (
+            <span style={{ fontSize: '10px', fontWeight: '700', color: '#be123c', background: '#ffe4e6', padding: '3px 8px', borderRadius: '4px' }}>
+              🔒 ACCESS DENIED FOR {currentUser.toUpperCase()}
+            </span>
+          )}
         </div>
       )}
 
       {/* Manual Decryption Box (When Locked) */}
       {!isUnlocked && (
-        <div style={{ background: '#f8fafc', border: '1px dashed #cbd5e1', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#1e3a8a', fontWeight: '700', fontSize: '13px' }}>
-            <Lock size={16} color="#2563eb" /> 🔑 Manual QKD Key Authorization Required to Decrypt Message
-          </div>
-          <p style={{ fontSize: '12px', color: '#64748b', margin: 0 }}>
-            To enforce single-use key security (ETSI GS QKD 014), paste or copy the matching QKD Key ID into the field below to authorize key consumption:
-          </p>
+        <div style={{
+          background: isAuthorizedRecipient ? '#f8fafc' : '#fff1f2',
+          border: isAuthorizedRecipient ? '1px dashed #cbd5e1' : '1px solid #fda4af',
+          borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px'
+        }}>
+          {isAuthorizedRecipient ? (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#1e3a8a', fontWeight: '700', fontSize: '13px' }}>
+                <Lock size={16} color="#2563eb" /> 🔑 Recipient Key Authorization Required to Decrypt
+              </div>
+              <p style={{ fontSize: '12px', color: '#64748b', margin: 0 }}>
+                Under ETSI GS QKD 014, key material is delivered only to authorized recipient (<strong>{selectedMsg.recipient}</strong>). Paste or copy the QKD Key ID to authorize single-use decryption:
+              </p>
 
-          <form onSubmit={handleManualDecrypt} style={{ display: 'flex', gap: '10px' }}>
-            <input
-              type="text"
-              value={keyInput}
-              onChange={(e) => setKeyInput(e.target.value)}
-              placeholder="Paste or enter QKD Key ID here..."
-              style={{
-                flex: 1, padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1',
-                fontSize: '12px', fontFamily: 'var(--font-code)', outline: 'none'
-              }}
-            />
-            <button type="submit" style={{
-              background: 'linear-gradient(135deg, #1e3a8a, #2563eb)', color: '#ffffff',
-              border: 'none', padding: '10px 18px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px'
-            }}>
-              <Unlock size={14} /> Authorize & Decrypt
-            </button>
-          </form>
+              <form onSubmit={handleManualDecrypt} style={{ display: 'flex', gap: '10px' }}>
+                <input
+                  type="text"
+                  value={keyInput}
+                  onChange={(e) => setKeyInput(e.target.value)}
+                  placeholder={`Paste QKD Key ID for ${selectedMsg.recipient}...`}
+                  style={{
+                    flex: 1, padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1',
+                    fontSize: '12px', fontFamily: 'var(--font-code)', outline: 'none'
+                  }}
+                />
+                <button type="submit" style={{
+                  background: 'linear-gradient(135deg, #1e3a8a, #2563eb)', color: '#ffffff',
+                  border: 'none', padding: '10px 18px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px'
+                }}>
+                  <Unlock size={14} /> Authorize & Decrypt
+                </button>
+              </form>
+            </>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#9f1239', fontWeight: '800', fontSize: '13px' }}>
+                <ShieldX size={18} color="#e11d48" /> 🚨 QKD KEY PRIVACY PROTECTION ACTIVE: RECIPIENT ONLY
+              </div>
+              <p style={{ fontSize: '12px', color: '#881337', margin: 0, lineHeight: '1.5' }}>
+                You are currently logged in as <strong>{currentUser}</strong>. The QKD Key ID is cryptographically restricted exclusively to the intended recipient (<strong>{selectedMsg.recipient}</strong>). Eavesdroppers (Eve) and non-authorized accounts cannot view or fetch key material out-of-band.
+              </p>
+              <div style={{ background: '#ffe4e6', padding: '10px 12px', borderRadius: '6px', fontSize: '11px', color: '#9f1239', fontWeight: '600' }}>
+                💡 Switch active user to <strong>{selectedMsg.recipient}</strong> in the left sidebar to view the QKD Key ID and authorize message decryption.
+              </div>
+            </div>
+          )}
 
           {errorMsg && (
             <div style={{ color: '#dc2626', fontSize: '12px', fontWeight: '600', background: '#fef2f2', padding: '8px 12px', borderRadius: '6px', border: '1px solid #fca5a5' }}>

@@ -227,6 +227,7 @@ export default function App() {
           ) : activeTab === 'inbox' ? (
             <MessageDetail
               selectedMsg={selectedMsg}
+              currentUser={currentUser}
               onInspectMime={handleInspectMime}
               onTamperTest={handleTamperTest}
             />

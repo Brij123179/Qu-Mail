@@ -1,5 +1,582 @@
 [
   {
+    "id": "aaaaab97-f583-4ee9-9468-a1b5f0c1fce9",
+    "timestamp": "2026-08-20T05:09:00.143914+00:00",
+    "event_type": "HARVEST_ATTACK_BLOCKED",
+    "actor": "Eve-Adversary",
+    "details": {
+      "msg_id": "52dc02cc-2816-4cf1-b0d2-dfe75c666b3f",
+      "level": 3,
+      "result": "Shannon Information-Theoretically Secure"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "45644afb-f51c-4d8f-95fe-8647a04d7a2c",
+    "timestamp": "2026-08-20T05:09:00.127488+00:00",
+    "event_type": "KEY_GENERATE",
+    "actor": "CryptoEngine-Sender",
+    "details": {
+      "key_id": "63ecf83c-9314-456b-ac9d-43dad0ec8d4a",
+      "length_bytes": 23,
+      "purpose": "vernam_otp",
+      "slave_sa_id": "default-sa"
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "7728a02c-f5c7-4491-aa3e-d09ae7503530",
+    "timestamp": "2026-08-20T05:09:00.122072+00:00",
+    "event_type": "HARVEST_ATTACK_SUCCESSFUL",
+    "actor": "Eve-Adversary",
+    "details": {
+      "msg_id": "eb0abe33-8af5-4e34-a64a-65a2f03ddf42",
+      "level": 1,
+      "result": "TLS payload compromised"
+    },
+    "status": "WARN"
+  },
+  {
+    "id": "e1469022-87d2-4b92-88db-5236f5a9a2de",
+    "timestamp": "2026-08-20T05:09:00.099098+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "c33b74b8-4bee-4d71-98ae-ea6f2c10124c",
+      "consumed_at": "2026-08-20T05:01:31.370655+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "49cc4a2f-9160-4847-ba72-8ec85e1509f6",
+    "timestamp": "2026-08-20T05:09:00.093282+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "0df407e3-e667-4c85-9a21-91d1da501b79",
+      "consumed_at": "2026-08-20T05:01:31.367366+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "5b53919c-8038-4f95-a054-e3b67a1443b5",
+    "timestamp": "2026-08-20T05:09:00.088956+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "2ff30e92-5de6-40c5-b3e0-82dbba020c1c",
+      "consumed_at": "2026-08-20T05:01:31.364023+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "d8d2aef1-5e9a-44b0-a9b0-10bd91918c12",
+    "timestamp": "2026-08-20T05:09:00.084782+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "f436c739-1b6b-4c3f-aed1-620b18793278",
+      "consumed_at": "2026-08-20T05:01:31.360500+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "9f5ed17a-3c6f-40a7-ac65-17ac33eff053",
+    "timestamp": "2026-08-20T05:09:00.080341+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "f51761c0-6675-4780-bde3-0f4640b5b96a",
+      "consumed_at": "2026-08-20T05:01:31.356359+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "2fe72614-37f0-4da7-89b2-30bb88ae6ed8",
+    "timestamp": "2026-08-20T05:09:00.076101+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "bd73c65a-06b3-481a-8ff8-525fd58ac94b",
+      "consumed_at": "2026-08-20T05:01:31.409508+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "c749a254-c7c3-4bce-934f-f00195dfe7b1",
+    "timestamp": "2026-08-20T05:09:00.072179+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "ecc71166-7732-47e2-9cc1-b3ffdda4a78c",
+      "consumed_at": "2026-08-20T05:06:28.644185+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "1d810468-7bc1-4c65-9588-3b7421f706ed",
+    "timestamp": "2026-08-20T05:09:00.067813+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "b6492fa4-e2d6-4882-a214-2a9533a8e5d4",
+      "consumed_at": "2026-08-20T05:06:28.715183+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "ce831718-42dc-4000-af1b-526976c5c571",
+    "timestamp": "2026-08-20T05:09:00.063697+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "6c3eaf89-379d-4542-a70a-2f3a015402ff",
+      "consumed_at": "2026-08-20T05:08:59.957565+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "71e7d032-5778-45cb-b044-493ff19e0af4",
+    "timestamp": "2026-08-20T05:09:00.056451+00:00",
+    "event_type": "KEY_CONSUME",
+    "actor": "CryptoEngine-Recipient",
+    "details": {
+      "key_id": "6af9a412-9e4f-4e9a-a188-ef7843cca3ca",
+      "length_bytes": 32
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "80b9becf-e434-40b2-9f62-65cc202bf4ae",
+    "timestamp": "2026-08-20T05:09:00.048896+00:00",
+    "event_type": "KEY_CONSUME",
+    "actor": "CryptoEngine-Recipient",
+    "details": {
+      "key_id": "ca563cdf-3b74-4fb6-97df-311083b12662",
+      "length_bytes": 32
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "c9ee2bb7-96fe-4209-9370-3f36aa9c021d",
+    "timestamp": "2026-08-20T05:09:00.034048+00:00",
+    "event_type": "KEY_GENERATE",
+    "actor": "CryptoEngine-Sender",
+    "details": {
+      "key_id": "6af9a412-9e4f-4e9a-a188-ef7843cca3ca",
+      "length_bytes": 32,
+      "purpose": "aes_gcm_256",
+      "slave_sa_id": "default-sa"
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "8d6ae77b-0fb0-4647-b7c2-cbdfef9a4f1a",
+    "timestamp": "2026-08-20T05:09:00.026636+00:00",
+    "event_type": "KEY_GENERATE",
+    "actor": "CryptoEngine-Sender",
+    "details": {
+      "key_id": "ca563cdf-3b74-4fb6-97df-311083b12662",
+      "length_bytes": 32,
+      "purpose": "aes_gcm_256",
+      "slave_sa_id": "default-sa"
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "d0f5438f-9e0a-4de8-8c9d-3ebe89f3327e",
+    "timestamp": "2026-08-20T05:09:00.020940+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "a6bcb751-076b-46db-b736-b8cbdf632754",
+      "consumed_at": "2026-08-20T05:01:31.320356+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "a4f00667-0588-4700-bd6e-29c4f187912d",
+    "timestamp": "2026-08-20T05:09:00.017028+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "6ab4b0b1-a624-45ee-9c7e-338e15871b96",
+      "consumed_at": "2026-08-20T05:01:31.374380+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "f06922d5-cb93-4986-94a3-068383dc12a6",
+    "timestamp": "2026-08-20T05:09:00.013192+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "4d80edcf-a2c9-48e7-8cd4-b0d6924982f8",
+      "consumed_at": "2026-08-20T05:06:28.598705+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "f970fd3d-dcc4-4d1d-ac69-787fe2c71d0c",
+    "timestamp": "2026-08-20T05:09:00.009457+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "3b56909d-49c6-4da9-9a9b-d91e3032dfb2",
+      "consumed_at": "2026-08-20T05:06:28.671819+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "5e05c631-a1fc-4b9c-8c4a-f681c412b03e",
+    "timestamp": "2026-08-20T05:09:00.005654+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "89159205-cc16-4024-aeaa-9e9b02ac0f07",
+      "consumed_at": "2026-08-20T05:08:59.904980+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "fd03bcc0-a849-4df5-905d-59d9a07d223b",
+    "timestamp": "2026-08-20T05:08:59.998635+00:00",
+    "event_type": "KEY_CONSUME",
+    "actor": "CryptoEngine-Recipient",
+    "details": {
+      "key_id": "ed34de7e-9f0d-4504-be05-1e71a7aa1b6f",
+      "length_bytes": 24
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "80e50c37-35e4-457a-809a-14181b725dd3",
+    "timestamp": "2026-08-20T05:08:59.993911+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "c33b74b8-4bee-4d71-98ae-ea6f2c10124c",
+      "consumed_at": "2026-08-20T05:01:31.370655+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "186ed180-fba9-45fd-a599-3d16dfd9d62a",
+    "timestamp": "2026-08-20T05:08:59.989527+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "0df407e3-e667-4c85-9a21-91d1da501b79",
+      "consumed_at": "2026-08-20T05:01:31.367366+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "64aaca27-98ea-4af7-9823-490a7bfa213d",
+    "timestamp": "2026-08-20T05:08:59.985582+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "2ff30e92-5de6-40c5-b3e0-82dbba020c1c",
+      "consumed_at": "2026-08-20T05:01:31.364023+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "ed94e9cf-b2dd-4164-85fe-ebcf300e34eb",
+    "timestamp": "2026-08-20T05:08:59.981019+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "f436c739-1b6b-4c3f-aed1-620b18793278",
+      "consumed_at": "2026-08-20T05:01:31.360500+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "188237a7-e7a9-4626-be51-82e49bbde9ba",
+    "timestamp": "2026-08-20T05:08:59.976767+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "f51761c0-6675-4780-bde3-0f4640b5b96a",
+      "consumed_at": "2026-08-20T05:01:31.356359+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "34858fb5-2817-4b87-8424-87dfab0ec20f",
+    "timestamp": "2026-08-20T05:08:59.972554+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "bd73c65a-06b3-481a-8ff8-525fd58ac94b",
+      "consumed_at": "2026-08-20T05:01:31.409508+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "87277dcb-35ed-4262-bf36-a5b82891b24d",
+    "timestamp": "2026-08-20T05:08:59.968561+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "ecc71166-7732-47e2-9cc1-b3ffdda4a78c",
+      "consumed_at": "2026-08-20T05:06:28.644185+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "49afdd4b-d8fe-4f6c-b5e3-380316e94317",
+    "timestamp": "2026-08-20T05:08:59.964215+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "b6492fa4-e2d6-4882-a214-2a9533a8e5d4",
+      "consumed_at": "2026-08-20T05:06:28.715183+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "786e71bb-4d25-4e0c-a721-7ff10a80e537",
+    "timestamp": "2026-08-20T05:08:59.957589+00:00",
+    "event_type": "KEY_CONSUME",
+    "actor": "CryptoEngine-Recipient",
+    "details": {
+      "key_id": "6c3eaf89-379d-4542-a70a-2f3a015402ff",
+      "length_bytes": 24
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "f671e9a8-d539-47a8-b687-5c28fa5a979b",
+    "timestamp": "2026-08-20T05:08:59.934293+00:00",
+    "event_type": "KEY_GENERATE",
+    "actor": "CryptoEngine-Sender",
+    "details": {
+      "key_id": "ed34de7e-9f0d-4504-be05-1e71a7aa1b6f",
+      "length_bytes": 24,
+      "purpose": "vernam_otp",
+      "slave_sa_id": "default-sa"
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "2d9234f6-913b-4db9-a03c-ef587ae068d1",
+    "timestamp": "2026-08-20T05:08:59.924188+00:00",
+    "event_type": "KEY_GENERATE",
+    "actor": "CryptoEngine-Sender",
+    "details": {
+      "key_id": "6c3eaf89-379d-4542-a70a-2f3a015402ff",
+      "length_bytes": 24,
+      "purpose": "vernam_otp",
+      "slave_sa_id": "default-sa"
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "5972f4d3-7f03-43bd-aa45-5fd248a7b848",
+    "timestamp": "2026-08-20T05:08:59.915607+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "a6bcb751-076b-46db-b736-b8cbdf632754",
+      "consumed_at": "2026-08-20T05:01:31.320356+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "43ea37d8-6de1-4626-8ad5-13f8b5333de5",
+    "timestamp": "2026-08-20T05:08:59.911631+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "4d80edcf-a2c9-48e7-8cd4-b0d6924982f8",
+      "consumed_at": "2026-08-20T05:06:28.598705+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "d4d9084f-7bfc-4101-9d96-5474147dd7a8",
+    "timestamp": "2026-08-20T05:08:59.905005+00:00",
+    "event_type": "KEY_CONSUME",
+    "actor": "CryptoEngine-Recipient",
+    "details": {
+      "key_id": "89159205-cc16-4024-aeaa-9e9b02ac0f07",
+      "length_bytes": 32
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "100d6443-fd1d-485f-8fe2-37b88fe4675a",
+    "timestamp": "2026-08-20T05:08:59.887563+00:00",
+    "event_type": "KEY_GENERATE",
+    "actor": "CryptoEngine-Sender",
+    "details": {
+      "key_id": "89159205-cc16-4024-aeaa-9e9b02ac0f07",
+      "length_bytes": 32,
+      "purpose": "aes_gcm_256",
+      "slave_sa_id": "default-sa"
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "5bdcde40-a7d0-41f6-82df-273791eeea75",
+    "timestamp": "2026-08-20T05:08:59.879598+00:00",
+    "event_type": "KEY_CONSUME",
+    "actor": "CryptoEngine-Recipient",
+    "details": {
+      "key_id": "016e752a-cc28-4e79-a5ea-9339665b2b62",
+      "length_bytes": 32
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "9881da45-d63d-4b8c-b6a7-508595644e0b",
+    "timestamp": "2026-08-20T05:08:59.873159+00:00",
+    "event_type": "KEY_GENERATE",
+    "actor": "CryptoEngine-Sender",
+    "details": {
+      "key_id": "016e752a-cc28-4e79-a5ea-9339665b2b62",
+      "length_bytes": 32,
+      "purpose": "pqc_kyber_hybrid",
+      "slave_sa_id": "default-sa"
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "7494a5fc-23ae-4eec-af1a-fd3f9c9097aa",
+    "timestamp": "2026-08-20T05:08:59.867595+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "ffa79d6f-3708-460b-a378-202f5edbaa8c",
+      "consumed_at": "2026-08-20T05:08:59.860484+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "a10d79ee-6427-451b-94fc-99b7777e56f3",
+    "timestamp": "2026-08-20T05:08:59.860508+00:00",
+    "event_type": "KEY_CONSUME",
+    "actor": "CryptoEngine-Recipient",
+    "details": {
+      "key_id": "ffa79d6f-3708-460b-a378-202f5edbaa8c",
+      "length_bytes": 37
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "8647fc8b-39ae-416e-a17a-db73fe76c15a",
+    "timestamp": "2026-08-20T05:08:59.853955+00:00",
+    "event_type": "KEY_GENERATE",
+    "actor": "CryptoEngine-Sender",
+    "details": {
+      "key_id": "ffa79d6f-3708-460b-a378-202f5edbaa8c",
+      "length_bytes": 37,
+      "purpose": "vernam_otp",
+      "slave_sa_id": "default-sa"
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "6b8133d8-7b01-4185-aa16-e079bb5d78b1",
+    "timestamp": "2026-08-20T05:08:59.848067+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "99b63598-56ab-46c5-ae93-d26449ef4ec2",
+      "consumed_at": "2026-08-20T05:08:59.841734+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "5908cc15-5521-4e84-8fd4-2a663c89c5e4",
+    "timestamp": "2026-08-20T05:08:59.841770+00:00",
+    "event_type": "KEY_CONSUME",
+    "actor": "CryptoEngine-Recipient",
+    "details": {
+      "key_id": "99b63598-56ab-46c5-ae93-d26449ef4ec2",
+      "length_bytes": 32
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "028c8642-e0ad-4387-bcc0-1856cb49e66b",
+    "timestamp": "2026-08-20T05:08:59.834337+00:00",
+    "event_type": "KEY_GENERATE",
+    "actor": "CryptoEngine-Sender",
+    "details": {
+      "key_id": "99b63598-56ab-46c5-ae93-d26449ef4ec2",
+      "length_bytes": 32,
+      "purpose": "aes_gcm_256",
+      "slave_sa_id": "default-sa"
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "c68229c1-7e80-4680-a2e5-948c3696dfd8",
+    "timestamp": "2026-08-20T05:08:59.828256+00:00",
+    "event_type": "REPLAY_ATTACK_PREVENTED",
+    "actor": "Adversary/ReplayAttempt",
+    "details": {
+      "key_id": "c7b992d2-90da-482e-a31a-cf0642eafb0b",
+      "consumed_at": "2026-08-20T05:08:59.822255+00:00",
+      "reason": "Attempted second key retrieval (OTP/AES single-use breach)"
+    },
+    "status": "BREACH_PREVENTED"
+  },
+  {
+    "id": "c2a3dd1f-0c9a-488e-a365-c3742d6fb580",
+    "timestamp": "2026-08-20T05:08:59.822278+00:00",
+    "event_type": "KEY_CONSUME",
+    "actor": "CryptoEngine-Recipient",
+    "details": {
+      "key_id": "c7b992d2-90da-482e-a31a-cf0642eafb0b",
+      "length_bytes": 32
+    },
+    "status": "SUCCESS"
+  },
+  {
+    "id": "eacce74e-2ff2-4669-ba4a-ee066db47851",
+    "timestamp": "2026-08-20T05:08:59.815850+00:00",
+    "event_type": "KEY_GENERATE",
+    "actor": "CryptoEngine-Sender",
+    "details": {
+      "key_id": "c7b992d2-90da-482e-a31a-cf0642eafb0b",
+      "length_bytes": 32,
+      "purpose": "aes_gcm",
+      "slave_sa_id": "default-sa"
+    },
+    "status": "SUCCESS"
+  },
+  {
     "id": "4763e087-ec5a-42ce-a9ff-d608f5182259",
     "timestamp": "2026-08-20T05:06:28.792548+00:00",
     "event_type": "HARVEST_ATTACK_BLOCKED",
