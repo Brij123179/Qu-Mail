@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuMail — Quantum-Secured Email Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --panel-bg: rgba(16, 24, 40, 0.75);
+      --panel-border: rgba(0, 240, 255, 0.15);
+      --panel-hover: rgba(0, 240, 255, 0.25);
+      --cyan: #00f0ff;
+      --purple: #9d4edd;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --font-heading: 'Orbitron', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.04) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(157, 78, 221, 0.05) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    header {
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .brand { display: flex; align-items: center; gap: 16px; }
+
+    .brand-logo {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      border-radius: 10px;
+      display: grid; place-items: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 22px;
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+    }
+
+    .brand-title h1 {
+      font-family: var(--font-heading); font-size: 22px; letter-spacing: 1px;
+      background: linear-gradient(90deg, #fff, var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .brand-title p { font-size: 12px; color: var(--text-muted); letter-spacing: 0.5px; }
+
+    .status-badges { display: flex; gap: 12px; align-items: center; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 30px;
+      font-size: 12px; font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.3);
+      cursor: pointer; transition: all 0.2s ease;
+    }
+
+    .badge:hover { border-color: var(--cyan); background: rgba(0, 240, 255, 0.1); }
+
+    .badge-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 10px var(--green);
+    }
+
+    .badge-dot.pulsing { animation: pulse 2s infinite; }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--panel-bg); backdrop-filter: blur(12px);
+      border: 1px solid var(--panel-border); border-radius: 16px;
+      padding: 24px; display: flex; flex-direction: column; gap: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: border-color 0.3s ease;
+    }
+
+    .panel:hover { border-color: var(--panel-hover); }
+
+    .panel-header {
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 14px;
+    }
+
+    .panel-title {
+      font-family: var(--font-heading); font-size: 15px; color: var(--cyan);
+      display: flex; align-items: center; gap: 10px; letter-spacing: 0.5px;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+    label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    input, select, textarea {
+      background: rgba(5, 10, 20, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px; padding: 12px 16px; color: #fff;
+      font-family: var(--font-body); font-size: 14px; outline: none;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--cyan); box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+    }
+
+    .level-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+    .level-btn {
+      background: rgba(5, 10, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.2s ease;
+    }
+
+    .level-btn:hover { border-color: var(--cyan); background: rgba(0, 240, 255, 0.05); }
+
+    .level-btn.active {
+      border-color: var(--cyan); background: rgba(0, 240, 255, 0.15);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+    }
+
+    .level-btn .lvl-num { font-family: var(--font-heading); font-size: 14px; font-weight: 700; color: var(--cyan); }
+    .level-btn .lvl-name { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+
+    .btn {
+      background: linear-gradient(135deg, var(--cyan), #00a8ff);
+      color: #000; font-family: var(--font-heading); font-weight: 700; font-size: 13px;
+      padding: 14px 24px; border: none; border-radius: 10px; cursor: pointer;
+      transition: all 0.2s ease; display: flex; justify-content: center; align-items: center; gap: 8px;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0, 240, 255, 0.5); }
+
+    .btn-red { background: linear-gradient(135deg, var(--red), #dc2626); color: #fff; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
+    .btn-red:hover { box-shadow: 0 0 30px rgba(239, 68, 68, 0.5); }
+
+    .btn-outline { background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; box-shadow: none; }
+    .btn-outline:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    .message-list { display: flex; flex-direction: column; gap: 12px; max-height: 440px; overflow-y: auto; padding-right: 4px; }
+
+    .message-card {
+      background: rgba(5, 10, 20, 0.7); border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; transition: all 0.2s ease;
+    }
+
+    .message-card:hover { border-color: rgba(0, 240, 255, 0.3); }
+
+    .msg-header { display: flex; justify-content: space-between; align-items: center; }
+    .msg-meta { display: flex; align-items: center; gap: 10px; }
+
+    .sec-tag { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-family: var(--font-code); }
+
+    .sec-lvl-1 { background: rgba(156, 163, 175, 0.2); color: #d1d5db; border: 1px solid #9ca3af; }
+    .sec-lvl-2 { background: rgba(0, 240, 255, 0.15); color: var(--cyan); border: 1px solid var(--cyan); }
+    .sec-lvl-3 { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid var(--green); }
+    .sec-lvl-4 { background: rgba(157, 78, 221, 0.15); color: var(--purple); border: 1px solid var(--purple); }
+
+    .msg-body-box {
+      background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px; padding: 12px; font-family: var(--font-code); font-size: 13px; word-break: break-all; color: #e5e7eb;
+    }
+
+    .msg-body-box.failed { border-color: var(--red); color: var(--red); background: rgba(239, 68, 68, 0.08); }
+
+    .msg-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .btn-sm { padding: 6px 12px; font-size: 11px; border-radius: 6px; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+    .stat-card {
+      background: rgba(5, 10, 20, 0.7); border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px; padding: 16px; text-align: center;
+    }
+
+    .stat-val { font-family: var(--font-heading); font-size: 24px; font-weight: 700; color: var(--cyan); margin-top: 4px; }
+    .stat-lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+
+    .audit-terminal {
+      background: #030712; border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 12px; padding: 16px; font-family: var(--font-code); font-size: 12px;
+      max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+    }
+
+    .log-line { display: flex; gap: 12px; }
+    .log-ts { color: var(--text-muted); }
+    .log-type { color: var(--cyan); font-weight: 600; }
+    .log-type.BREACH_PREVENTED { color: var(--red); }
+    .log-actor { color: var(--purple); }
+
+    /* Tables */
+    .key-table {
+      width: 100%; border-collapse: collapse; font-family: var(--font-code); font-size: 12px;
+    }
+
+    .key-table th, .key-table td {
+      padding: 10px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .key-table th { color: var(--cyan); font-weight: 600; text-transform: uppercase; font-size: 10px; }
+
+    /* Architecture Visualizer */
+    .arch-container {
+      display: flex; flex-direction: column; gap: 10px; padding: 10px;
+    }
+
+    .arch-layer {
+      background: rgba(5, 10, 20, 0.8); border: 1px solid var(--panel-border);
+      border-radius: 10px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .arch-layer:hover {
+      border-color: var(--cyan); transform: translateX(4px); background: rgba(0, 240, 255, 0.05);
+    }
+
+    .arch-title { font-family: var(--font-heading); font-size: 13px; color: var(--cyan); }
+    .arch-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
+      display: none; place-items: center; z-index: 999;
+    }
+
+    .modal-content {
+      background: #0b1329; border: 1px solid var(--cyan); border-radius: 16px;
+      padding: 28px; width: 90%; max-width: 720px; max-height: 85vh; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 20px; box-shadow: 0 0 50px rgba(0, 240, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">Q</div>
+      <div class="brand-title">
+        <h1>QuMail Platform</h1>
+        <p>ETSI GS QKD 014 Compliant Quantum-Secured Mailbox</p>
+      </div>
+    </div>
+
+    <div class="status-badges">
+      <div class="badge" onclick="openPhysicsModal()">
+        <span>🧪 Physics & Entropy Explainer</span>
+      </div>
+      <div class="badge" onclick="openTransportModal()">
+        <div class="badge-dot pulsing"></div>
+        <span id="badge-transport-text">Transport: Local Mailbox</span>
+      </div>
+      <div class="badge">
+        <span>ETSI QKD REST: ONLINE</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Telemetry Bar -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-lbl">Keys Issued</div>
+      <div class="stat-val" id="stat-total-keys">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Keys Consumed (Burned)</div>
+      <div class="stat-val" id="stat-consumed-keys" style="color: var(--purple);">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Protected Emails</div>
+      <div class="stat-val" id="stat-total-emails" style="color: var(--green);">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Replay Attacks Blocked</div>
+      <div class="stat-val" id="stat-breaches" style="color: var(--red);">0</div>
+    </div>
+  </div>
+
+  <!-- Interactive 4-Layer Architecture Diagram Panel -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">📐 Interactive 4-Layer Decoupled System Architecture</div>
+      <div style="font-size: 11px; color: var(--text-muted);">Hover over any layer to inspect file responsibilities</div>
+    </div>
+
+    <div class="arch-container">
+      <div class="arch-layer">
+        <div>
+          <div class="arch-title">Layer 1: Client / User Interface Layer</div>
+          <div class="arch-sub">Web Dashboard (<code>index.html</code>) & CLI Tool (<code>qumail_cli.py</code>) — Handles mail composition, security level selection, and inbox viewing.</div>
+        </div>
+        <span class="sec-tag sec-lvl-1">GUI / CLI</span>
+      </div>
+
+      <div class="arch-layer">
+        <div>
+          <div class="arch-title">Layer 2: Email Transport Protocol Layer</div>
+          <div class="arch-sub">MIME Transport Handler (<code>email_service.py</code>) — Wraps payload in MIME headers (<code>X-QuMail-Key-Id</code>) for local storage or real Gmail/Outlook SMTP.</div>
+        </div>
+        <span class="sec-tag sec-lvl-2">MIME / SMTP</span>
+      </div>
+
+      <div class="arch-layer">
+        <div>
+          <div class="arch-title">Layer 3: Multi-Level Cryptographic Engine</div>
+          <div class="arch-sub">Crypto Core (<code>crypto_engine.py</code>) — Implements Level 1 (TLS), Level 2 (AES-256-GCM + HKDF-SHA256), Level 3 (OTP Vernam XOR), and Level 4 (PQC Kyber).</div>
+        </div>
+        <span class="sec-tag sec-lvl-3">Crypto Core</span>
+      </div>
+
+      <div class="arch-layer">
+        <div>
+          <div class="arch-title">Layer 4: Key Manager (KM) Interface Service</div>
+          <div class="arch-sub">ETSI GS QKD 014 REST Server (<code>km_server.py</code>) — Key bank pool, single-use statekeeper (HTTP 410 Gone on key reuse).</div>
+        </div>
+        <span class="sec-tag sec-lvl-4">ETSI REST API</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="dashboard-grid">
+
+    <!-- Left Column: Compose & Security Control -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">⚡ Quantum Email Composer</div>
+      </div>
+
+      <div class="form-group">
+        <label>Sender Account</label>
+        <input type="text" id="comp-sender" value="alice@qumail.sec">
+      </div>
+
+      <div class="form-group">
+        <label>Recipient Account</label>
+        <input type="text" id="comp-recipient" value="bob@qumail.sec">
+      </div>
+
+      <div class="form-group">
+        <label>Subject</label>
+        <input type="text" id="comp-subject" value="QKD Node Status & Key Sync">
+      </div>
+
+      <div class="form-group">
+        <label>Quantum Security Level</label>
+        <div class="level-selector">
+          <div class="level-btn" onclick="selectLevel(1)" id="lvl-btn-1">
+            <div class="lvl-num">L1</div>
+            <div class="lvl-name">TLS Only</div>
+          </div>
+          <div class="level-btn active" onclick="selectLevel(2)" id="lvl-btn-2">
+            <div class="lvl-num">L2</div>
+            <div class="lvl-name">AES-256 GCM</div>
+          </div>
+          <div class="level-btn" onclick="selectLevel(3)" id="lvl-btn-3">
+            <div class="lvl-num">L3</div>
+            <div class="lvl-name">OTP Vernam</div>
+          </div>
+          <div class="level-btn" onclick="selectLevel(4)" id="lvl-btn-4">
+            <div class="lvl-num">L4</div>
+            <div class="lvl-name">PQC Hybrid</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Message Content</label>
+        <textarea id="comp-body" rows="4">This sensitive transmission is encrypted using ETSI GS QKD 014 derived key material. Key material never crosses classical networks.</textarea>
+      </div>
+
+      <button class="btn" onclick="sendEmail()">
+        <span>🔒 Encrypt & Send Email</span>
+      </button>
+    </div>
+
+    <!-- Right Column: Inbox & Inspection -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">📥 Secure Mailbox Inbox</div>
+        <div class="form-group" style="margin: 0; width: 160px;">
+          <select id="inbox-user-select" onchange="loadInbox()">
+            <option value="bob@qumail.sec">User: Bob</option>
+            <option value="alice@qumail.sec">User: Alice</option>
+            <option value="all">View All</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="message-list" id="message-container">
+        <!-- Messages rendered dynamically -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Key Explorer & Red Team Row -->
+  <div class="dashboard-grid">
+
+    <!-- Live QKD Key Bank Explorer Table -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title" style="color: var(--cyan);">🔑 Live ETSI QKD Key Bank Explorer</div>
+        <button class="btn btn-sm btn-outline" onclick="loadKeyBank()">Refresh Bank</button>
+      </div>
+
+      <div style="max-height: 260px; overflow-y: auto;">
+        <table class="key-table">
+          <thead>
+            <tr>
+              <th>Key ID (UUID)</th>
+              <th>Bytes</th>
+              <th>Purpose</th>
+              <th>Status</th>
+              <th>Created / Consumed</th>
+            </tr>
+          </thead>
+          <tbody id="key-table-body">
+            <!-- Key rows rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Red Team & Replay Attack Tester -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title" style="color: var(--red);">🛡️ Red Team & Replay Attack Tester</div>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-muted);">
+        Test QuMail's single-use key enforcement. Attempting a second key retrieval for an OTP or AES message will return <strong>HTTP 410 Gone</strong>.
+      </p>
+
+      <div class="form-group">
+        <label>Target Key ID (From Sent Email)</label>
+        <input type="text" id="attack-key-id" placeholder="Paste UUID key_id here">
+      </div>
+
+      <button class="btn btn-red" onclick="runReplayAttack()">
+        <span>🔥 Execute Replay Attack</span>
+      </button>
+
+      <div id="attack-result-box" style="display: none; padding: 12px; border-radius: 8px; font-family: var(--font-code); font-size: 12px;"></div>
+    </div>
+
+  </div>
+
+  <!-- Telemetry Log Terminal -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title" style="color: var(--purple);">📡 ETSI QKD Audit Telemetry Log</div>
+      <button class="btn btn-sm btn-outline" onclick="loadAuditLogs()">Refresh Logs</button>
+    </div>
+
+    <div class="audit-terminal" id="audit-log-container">
+      <!-- Audit logs rendered here -->
+    </div>
+  </div>
+
+  <!-- Physics & Entropy Explainer Modal -->
+  <div class="modal-overlay" id="physics-modal">
+    <div class="modal-content">
+      <div class="panel-header" style="border-bottom: 1px solid rgba(0, 240, 255, 0.3);">
+        <div class="panel-title">🧪 Physical Entropy vs Quantum Entropy Explainer</div>
+        <button class="btn btn-sm btn-red" onclick="closePhysicsModal()">Close</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 13px; color: #e5e7eb; line-height: 1.6;">
+        <div style="background: rgba(0, 240, 255, 0.08); border: 1px solid var(--cyan); border-radius: 10px; padding: 16px;">
+          <h4 style="color: var(--cyan); margin-bottom: 6px;">1. Cloudflare's Lava Lamps (Entropy Generation)</h4>
+          <p>
+            Cloudflare points cameras at 100 lava lamps in its lobby to capture physical chaos (wax blob movement & pixel noise) to seed cryptographic keys. This solves <strong>"How do we generate true random keys?"</strong> but cannot detect eavesdroppers in transit.
+          </p>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid var(--green); border-radius: 10px; padding: 16px;">
+          <h4 style="color: var(--green); margin-bottom: 6px;">2. Quantum Key Distribution (QKD) & Physics</h4>
+          <p>
+            QKD uses single photons over optical fiber/satellites (BB84 protocol). Under the <strong>Heisenberg Uncertainty Principle</strong> and <strong>No-Cloning Theorem</strong> (|ψ⟩), any measurement by an eavesdropper alters photon states.
+          </p>
+          <p style="margin-top: 6px; font-style: italic; color: #d1d5db;">
+            <strong>The Soap Bubble Analogy:</strong> A quantum key is like a key made of soap bubbles — the instant an eavesdropper touches it to copy it, it pops, and both parties detect the intrusion!
+          </p>
+        </div>
+
+        <div style="background: rgba(157, 78, 221, 0.08); border: 1px solid var(--purple); border-radius: 10px; padding: 16px;">
+          <h4 style="color: var(--purple); margin-bottom: 6px;">3. QuMail ETSI GS QKD 014 Key Manager Integration</h4>
+          <p>
+            QuMail software interfaces with Key Managers via the industry-standard <strong>ETSI GS QKD 014 REST API</strong>. Keys are generated, issued once, and burned immediately upon recipient decryption (returning <strong>HTTP 410 Gone</strong> on key reuse attempts).
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MIME Packet Inspector Modal -->
+  <div class="modal-overlay" id="mime-modal">
+    <div class="modal-content">
+      <div class="panel-header" style="border-bottom: 1px solid rgba(0, 240, 255, 0.3);">
+        <div class="panel-title">🔍 MIME Envelope & Cryptographic Packet Inspector</div>
+        <button class="btn btn-sm btn-red" onclick="closeMimeModal()">Close</button>
+      </div>
+      <div style="font-size: 12px; color: var(--text-muted);">
+        Notice that key material is absent from MIME headers and body. Only <code>X-QuMail-Key-Id</code> and <code>X-QuMail-Level</code> ride the transport channel.
+      </div>
+      <div id="mime-packet-content" style="background: #030712; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 16px; font-family: var(--font-code); font-size: 12px; color: var(--cyan); white-space: pre-wrap; word-break: break-all;"></div>
+    </div>
+  </div>
+
+  <!-- Transport Config Modal -->
+  <div class="modal-overlay" id="transport-modal">
+    <div class="modal-content">
+      <div class="panel-header" style="border-bottom: 1px solid rgba(0, 240, 255, 0.3);">
+        <div class="panel-title">⚙️ Email Transport Configuration</div>
+        <button class="btn btn-sm btn-red" onclick="closeTransportModal()">Close</button>
+      </div>
+
+      <div class="form-group">
+        <label>Transport Mode</label>
+        <select id="cfg-mode" onchange="toggleSmtpFields()">
+          <option value="local_storage">Local Transport Database (Simulated Zero-Config Mailbox)</option>
+          <option value="real_smtp_imap">Real Internet SMTP Server (Gmail / Outlook / Custom SMTP)</option>
+        </select>
+      </div>
+
+      <div id="smtp-fields" style="display: none; flex-direction: column; gap: 12px;">
+        <div class="form-group">
+          <label>SMTP Host</label>
+          <input type="text" id="cfg-smtp-host" value="smtp.gmail.com">
+        </div>
+        <div class="form-group">
+          <label>SMTP Port</label>
+          <input type="number" id="cfg-smtp-port" value="587">
+        </div>
+        <div class="form-group">
+          <label>SMTP Username / Email</label>
+          <input type="text" id="cfg-smtp-user" placeholder="your-email@gmail.com">
+        </div>
+        <div class="form-group">
+          <label>SMTP App Password</label>
+          <input type="password" id="cfg-smtp-pass" placeholder="App Password">
+        </div>
+      </div>
+
+      <button class="btn" onclick="saveTransportConfig()">Save Transport Settings</button>
+    </div>
+  </div>
+
+  <script>
+    let selectedLevel = 2;
+    let currentMailboxData = [];
+
+    function selectLevel(lvl) {
+      selectedLevel = lvl;
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`lvl-btn-${i}`).classList.remove('active');
+      }
+      document.getElementById(`lvl-btn-${lvl}`).classList.add('active');
+    }
+
+    async function updateStats() {
+      try {
+        const res = await fetch('/api/v1/dashboard/stats');
+        const data = await res.json();
+        document.getElementById('stat-total-keys').innerText = data.qkd_telemetry.total_keys_generated;
+        document.getElementById('stat-consumed-keys').innerText = data.qkd_telemetry.keys_consumed;
+        document.getElementById('stat-total-emails').innerText = data.email_telemetry.total_emails_sent;
+        document.getElementById('stat-breaches').innerText = data.audit_summary.breaches_prevented;
+        document.getElementById('badge-transport-text').innerText = `Transport: ${data.email_telemetry.transport_mode === 'real_smtp_imap' ? 'Real SMTP Server' : 'Local Mailbox'}`;
+      } catch (err) {
+        console.error('Failed to update stats:', err);
+      }
+    }
+
+    async function sendEmail() {
+      const sender = document.getElementById('comp-sender').value;
+      const recipient = document.getElementById('comp-recipient').value;
+      const subject = document.getElementById('comp-subject').value;
+      const body = document.getElementById('comp-body').value;
+
+      try {
+        const res = await fetch('/api/v1/email/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sender, recipient, subject, body, security_level: selectedLevel })
+        });
+        const result = await res.json();
+        if (res.ok) {
+          alert(`Email sent successfully! Key ID: ${result.data.key_id || 'None (TLS)'}`);
+          if (result.data.key_id) {
+            document.getElementById('attack-key-id').value = result.data.key_id;
+          }
+          loadInbox();
+          loadKeyBank();
+          updateStats();
+          loadAuditLogs();
+        } else {
+          alert(`Send Failed: ${result.detail}`);
+        }
+      } catch (err) {
+        alert(`Error sending email: ${err.message}`);
+      }
+    }
+
+    async function loadInbox() {
+      const user = document.getElementById('inbox-user-select').value;
+      const container = document.getElementById('message-container');
+
+      try {
+        const res = await fetch(`/api/v1/email/inbox/${encodeURIComponent(user)}`);
+        const data = await res.json();
+        currentMailboxData = data.messages;
+
+        if (data.messages.length === 0) {
+          container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Mailbox empty. Send a message to see decrypted content!</div>';
+          return;
+        }
+
+        container.innerHTML = '';
+        data.messages.forEach(msg => {
+          const card = document.createElement('div');
+          card.className = 'message-card';
+          
+          const isFailed = msg.decrypt_status !== 'SUCCESS';
+          const bodyClass = isFailed ? 'msg-body-box failed' : 'msg-body-box';
+          
+          card.innerHTML = `
+            <div class="msg-header">
+              <div class="msg-meta">
+                <span class="sec-tag sec-lvl-${msg.security_level}">Level ${msg.security_level}</span>
+                <strong style="font-size: 14px;">${escapeHtml(msg.subject)}</strong>
+              </div>
+              <span style="font-size: 11px; color: var(--text-muted);">${new Date(msg.timestamp).toLocaleTimeString()}</span>
+            </div>
+
+            <div style="font-size: 12px; color: var(--text-muted);">
+              From: ${escapeHtml(msg.sender)} &nbsp;|&nbsp; To: ${escapeHtml(msg.recipient)}
+              ${msg.key_id ? `<br><code style="font-size: 10px; color: var(--cyan);">Key ID: ${msg.key_id}</code>` : ''}
+            </div>
+
+            <div class="${bodyClass}">
+              ${escapeHtml(msg.decrypted_body)}
+            </div>
+
+            <div class="msg-actions">
+              <button class="btn btn-sm btn-outline" onclick="inspectMimePacket('${msg.id}')">🔍 Inspect Raw MIME</button>
+              ${msg.security_level > 1 ? `<button class="btn btn-sm btn-red" onclick="tamperAndTest('${msg.id}')">⚡ Test Tamper Attack</button>` : ''}
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {
+        container.innerHTML = `<div style="color: var(--red); padding: 20px;">Error loading inbox: ${err.message}</div>`;
+      }
+    }
+
+    async function loadKeyBank() {
+      const tbody = document.getElementById('key-table-body');
+      try {
+        const res = await fetch('/api/v1/keys/bank/list?limit=20');
+        const keys = await res.json();
+        tbody.innerHTML = '';
+        if (keys.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No QKD keys generated yet.</td></tr>';
+          return;
+        }
+
+        keys.forEach(k => {
+          const tr = document.createElement('tr');
+          const isConsumed = k.status === 'consumed';
+          const statusStyle = isConsumed ? 'color: var(--purple); font-weight: 700;' : 'color: var(--green); font-weight: 700;';
+          tr.innerHTML = `
+            <td><code>${k.key_id.substring(0, 18)}...</code></td>
+            <td>${k.length_bytes} B</td>
+            <td>${k.purpose}</td>
+            <td style="${statusStyle}">${k.status.toUpperCase()}</td>
+            <td>${new Date(k.created_at).toLocaleTimeString()}${k.consumed_at ? ' / Burned' : ''}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error('Failed to load key bank:', err);
+      }
+    }
+
+    function inspectMimePacket(msgId) {
+      const msg = currentMailboxData.find(m => m.id === msgId);
+      if (!msg) return;
+
+      const lines = [
+        `MIME-Version: 1.0`,
+        `Content-Type: ${msg.headers['Content-Type'] || 'application/qumail-enc'}`,
+        `From: ${msg.sender}`,
+        `To: ${msg.recipient}`,
+        `Subject: ${msg.subject}`,
+        `Date: ${msg.timestamp}`,
+        `X-QuMail-Level: ${msg.security_level}`,
+      ];
+
+      if (msg.key_id) lines.push(`X-QuMail-Key-Id: ${msg.key_id}`);
+      if (msg.iv_b64) lines.push(`X-QuMail-IV: ${msg.iv_b64}`);
+
+      lines.push(``);
+      lines.push(`--- ENCRYPTED PAYLOAD (BASE64) ---`);
+      lines.push(msg.body_b64);
+
+      document.getElementById('mime-packet-content').innerText = lines.join('\n');
+      document.getElementById('mime-modal').style.display = 'grid';
+    }
+
+    function closeMimeModal() {
+      document.getElementById('mime-modal').style.display = 'none';
+    }
+
+    function openPhysicsModal() {
+      document.getElementById('physics-modal').style.display = 'grid';
+    }
+
+    function closePhysicsModal() {
+      document.getElementById('physics-modal').style.display = 'none';
+    }
+
+    function openTransportModal() {
+      document.getElementById('transport-modal').style.display = 'grid';
+    }
+
+    function closeTransportModal() {
+      document.getElementById('transport-modal').style.display = 'none';
+    }
+
+    function toggleSmtpFields() {
+      const mode = document.getElementById('cfg-mode').value;
+      document.getElementById('smtp-fields').style.display = mode === 'real_smtp_imap' ? 'flex' : 'none';
+    }
+
+    async function saveTransportConfig() {
+      const mode = document.getElementById('cfg-mode').value;
+      const payload = {
+        mode: mode,
+        smtp_host: document.getElementById('cfg-smtp-host').value,
+        smtp_port: parseInt(document.getElementById('cfg-smtp-port').value),
+        smtp_user: document.getElementById('cfg-smtp-user').value || null,
+        smtp_password: document.getElementById('cfg-smtp-pass').value || null,
+      };
+
+      try {
+        const res = await fetch('/api/v1/config/transport', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          alert('Transport settings updated successfully!');
+          closeTransportModal();
+          updateStats();
+        } else {
+          alert('Failed to update transport settings.');
+        }
+      } catch (err) {
+        alert(`Error saving config: ${err.message}`);
+      }
+    }
+
+    async function runReplayAttack() {
+      const keyId = document.getElementById('attack-key-id').value.trim();
+      const resultBox = document.getElementById('attack-result-box');
+
+      if (!keyId) {
+        alert('Please enter a Key ID.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/v1/keys/simulate-attack/replay', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key_id: keyId })
+        });
+        const data = await res.json();
+        
+        resultBox.style.display = 'block';
+        if (data.status_code === 410) {
+          resultBox.style.background = 'rgba(16, 185, 129, 0.15)';
+          resultBox.style.border = '1px solid var(--green)';
+          resultBox.style.color = '#fff';
+          resultBox.innerHTML = `<strong>🛡️ DEFENSE SUCCESSFUL (HTTP 410 GONE)</strong><br>${data.details}<br><br><em>${data.mitigation_explanation}</em>`;
+        } else {
+          resultBox.style.background = 'rgba(239, 68, 68, 0.15)';
+          resultBox.style.border = '1px solid var(--red)';
+          resultBox.style.color = '#fff';
+          resultBox.innerHTML = `<strong>⚠️ ${data.attack_type}</strong><br>${data.details}<br>Status Code: ${data.status_code}`;
+        }
+        loadKeyBank();
+        updateStats();
+        loadAuditLogs();
+      } catch (err) {
+        alert(`Attack sim error: ${err.message}`);
+      }
+    }
+
+    async function tamperAndTest(msgId) {
+      try {
+        const res = await fetch(`/api/v1/attack/tamper?msg_id=${msgId}`, { method: 'POST' });
+        const data = await res.json();
+        alert(`Tamper Attack Test Result:\n\n${data.details}\n\nMitigation: ${data.mitigation_explanation}`);
+        loadAuditLogs();
+        updateStats();
+      } catch (err) {
+        alert(`Tamper test error: ${err.message}`);
+      }
+    }
+
+    async function loadAuditLogs() {
+      const container = document.getElementById('audit-log-container');
+      try {
+        const res = await fetch('/api/v1/audit/logs?limit=30');
+        const logs = await res.json();
+        container.innerHTML = '';
+        logs.forEach(log => {
+          const div = document.createElement('div');
+          div.className = 'log-line';
+          const time = new Date(log.timestamp).toLocaleTimeString();
+          div.innerHTML = `
+            <span class="log-ts">[${time}]</span>
+            <span class="log-type ${log.status}">${log.event_type}</span>
+            <span class="log-actor">${escapeHtml(log.actor)}</span>
+            <span style="color: #d1d5db;">${escapeHtml(JSON.stringify(log.details))}</span>
+          `;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        console.error('Failed to load audit logs:', err);
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Initialize
+    updateStats();
+    loadInbox();
+    loadKeyBank();
+    loadAuditLogs();
+    setInterval(() => {
+      updateStats();
+      loadKeyBank();
+      loadAuditLogs();
+    }, 5000);
+  </script>
+</body>
+</html>
