@@ -62,10 +62,16 @@ export default function App() {
   const fetchInbox = async () => {
     try {
       const data = await api.getInbox(currentUser);
-      setMessages(data.messages || []);
-      if (data.messages && data.messages.length > 0 && !selectedMsg) {
-        setSelectedMsg(data.messages[0]);
-      }
+      const msgs = data.messages || [];
+      setMessages(msgs);
+      setSelectedMsg((prev) => {
+        if (!prev && msgs.length > 0) return msgs[0];
+        if (prev) {
+          const matching = msgs.find((m) => m.id === prev.id);
+          return matching || prev;
+        }
+        return null;
+      });
     } catch (err) {
       console.error('Failed to fetch inbox:', err);
     }
@@ -99,6 +105,7 @@ export default function App() {
   };
 
   useEffect(() => {
+    setSelectedMsg(null);
     fetchDashboardStats();
     fetchInbox();
     fetchKeyBank();
